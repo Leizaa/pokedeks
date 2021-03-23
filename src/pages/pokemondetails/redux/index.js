@@ -6,7 +6,7 @@ export default combineReducers({
 });
 
 const pokemonDetailSelector = {
-  pokemonDetail: (state) => state.screen.pokemon.detail.pokemonDetail,
+  pokemonDetail: (state) => state.screen.detail.pokemonDetail,
 };
 
 export { pokemonDetailSelector };

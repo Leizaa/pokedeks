@@ -8,18 +8,17 @@ const getDetailAction = {
     dispatch(request.obj(actionType.GET_POKEMON_DETAIL_REQUEST));
 
     const url = apiConstant.API_URL + "/" + pokemonId;
-    console.log(url);
     return axios
       .get(url)
       .then((response) => {
-        console.log(response);
         return dispatch(
           request.obj(actionType.GET_POKEMON_DETAIL_SUCCESS, {
             response,
           })
         );
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         return dispatch(
           request.obj(actionType.GET_POKEMON_DETAIL_FAILURE, {
             errorMessage: "Failed to get detail",

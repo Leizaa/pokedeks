@@ -2,6 +2,11 @@ import React from "react";
 import { Container, Grid, Header } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 import PokeCard from "../../../components/PokeCard";
+import PropTypes from "prop-types";
+import { pokemonListSelector } from "../redux";
+import getListAction from "../redux/listname/action";
+import { connect } from "react-redux";
+import { propsActionIsSuccess } from "../../../util/state";
 
 const bulba = {
   id: 1,
@@ -38,7 +43,6 @@ const formatPokeList = (pokeList) => {
   var innerArray = [];
   var outerArray = [];
   for (var i = 0; i < pokeList.length; i++) {
-    console.log(pokeList[i]);
     if (i % 2 === 0) {
       innerArray.push(pokeList[i]);
     } else {
@@ -76,6 +80,44 @@ const getRows = (params) => {
 const formatedPokeList = formatPokeList(pokeList);
 
 class home extends React.Component {
+  componentDidMount() {
+    this.props.getList(0);
+  }
+
+  state = {
+    next: "",
+    previous: "",
+    pokeNames: [],
+    pokeImageURLs: [],
+  };
+
+  processResponse(reponse) {
+    if (reponse.getIn(["data", "previous"]) !== null) {
+      this.state.previous = reponse.getIn(["data", "previous"]);
+    }
+    this.state.next = reponse.getIn(["data", "next"]);
+    let pokeNameMap = reponse.getIn(["data", "results"]);
+    pokeNameMap.toJS().forEach((pokeName) => {
+      this.state.pokeNames.push(pokeName.name);
+      this.state.pokeImageURLs.push(pokeName.url);
+    });
+    console.log(this.state.pokeNames);
+    console.log(this.state.pokeImageURLs);
+    console.log(this.state.next);
+    console.log(this.state.previous);
+  }
+
+  componentDidUpdate(prevProps) {
+    // const fetchDataSuccess = propsActionIsSuccess(
+    //   this.props,
+    //   prevProps,
+    //   "listPokemon"
+    // );
+    // if (fetchDataSuccess) {
+    //   this.processResponse(this.props.listPokemon);
+    // }
+  }
+
   render() {
     return (
       <Container>
@@ -92,4 +134,15 @@ class home extends React.Component {
   }
 }
 
-export default home;
+home.propTypes = {
+  listPokemon: PropTypes.instanceOf(Object).isRequired,
+  getList: PropTypes.func.isRequired,
+};
+
+const mapStateToProp = (state) => ({
+  listPokemon: pokemonListSelector.pokemonList(state),
+});
+
+export default connect(mapStateToProp, {
+  getList: getListAction.get,
+})(home);
