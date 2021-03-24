@@ -9,8 +9,8 @@ const getListAction = {
     dispatch(request.obj(actionType.GET_POKEMON_LIST_REQUEST));
 
     let url = apiConstant.API_URL + "?limit=30";
-    if (offset >= 0) {
-      url = url + "&offset=" + offset;
+    if (!_.isUndefined(offset) && !_.isEmpty(offset)) {
+      url = offset;
     }
     return axios
       .get(url)

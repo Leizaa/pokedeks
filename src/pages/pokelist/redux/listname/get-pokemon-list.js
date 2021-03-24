@@ -33,7 +33,6 @@ const getPokeTypes = (types) => {
 const preprocessResponse = (action) => {
   let pokeDetails = [];
   let rawPokeList = _.get(action, "payload.output.pokeList");
-  // console.log(action);
   rawPokeList.forEach((pokeDetail) => {
     let name = pokeDetail.name;
     let types = pokeDetail.types;
@@ -45,10 +44,8 @@ const preprocessResponse = (action) => {
       id,
       sprites,
     };
-    // console.log(poke);
     pokeDetails.push(poke);
   });
-  // console.log(pokeDetails);
 
   let shrinked = {
     next: action.payload.output.next,
@@ -56,7 +53,6 @@ const preprocessResponse = (action) => {
     pokeList: pokeDetails,
   };
 
-  // console.log(shrinked);
   let data = {
     data: shrinked,
   };
@@ -64,7 +60,6 @@ const preprocessResponse = (action) => {
   let output = {
     payload: data,
   };
-  console.log(output);
   return output;
 };
 

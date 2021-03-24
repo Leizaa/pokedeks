@@ -1,62 +1,12 @@
 import React from "react";
-import { Container, Grid, Header } from "semantic-ui-react";
+import { Button, Container, Grid, Header } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 import PokeCard from "../../../components/PokeCard";
 import PropTypes from "prop-types";
 import { pokemonListSelector } from "../redux";
 import getListAction from "../redux/listname/action";
 import { connect } from "react-redux";
-import { propsActionIsSuccess } from "../../../util/state";
 import _ from "lodash";
-
-// const bulba = {
-//   id: 1,
-//   name: "bulbasaur",
-//   types: [
-//     {
-//       slot: 1,
-//       type: {
-//         name: "grass",
-//         url: "https://pokeapi.co/api/v2/type/12/",
-//       },
-//     },
-//     {
-//       slot: 2,
-//       type: {
-//         name: "poison",
-//         url: "https://pokeapi.co/api/v2/type/4/",
-//       },
-//     },
-//   ],
-//   sprites: {
-//     others: {
-//       "official-artwork": {
-//         front_default:
-//           "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-//       },
-//     },
-//   },
-// };
-
-// const pokeList = [bulba, bulba, bulba];
-
-// const formatPokeList = (pokeList) => {
-//   var innerArray = [];
-//   var outerArray = [];
-//   for (var i = 0; i < pokeList.length; i++) {
-//     if (i % 2 === 0) {
-//       innerArray.push(pokeList[i]);
-//     } else {
-//       innerArray.push(pokeList[i]);
-//       outerArray.push(innerArray);
-//       innerArray = [];
-//     }
-//   }
-//   if (innerArray.length > 0) {
-//     outerArray.push(innerArray);
-//   }
-//   return outerArray;
-// };
 
 const getColumns = (pokeList) => {
   return (
@@ -66,36 +16,68 @@ const getColumns = (pokeList) => {
   );
 };
 
-// const formatedPokeList = formatPokeList(pokeList);
-
 class home extends React.Component {
-  componentDidMount() {
-    this.props.getList(0);
+  constructor() {
+    super();
+    this.state = {
+      windowWidth: window.innerWidth,
+    };
   }
+
+  pokeList = [];
+
+  componentDidMount() {
+    window.addEventListener("resize", this.handleResize);
+    this.props.getList();
+  }
+
+  handleResize = (e) => {
+    console.log(window.innerWidth);
+    this.setState({ windowWidth: window.innerWidth });
+  };
 
   getRows = () => {
     let a = [];
     let column = [];
-    const pokeList = this.props.listPokemon.getIn(["data", "pokeList"]);
-    if (!_.isUndefined(pokeList) && !_.isEmpty(pokeList)) {
-      for (let i = 0; i < pokeList.toJS().length; i++) {
-        if (i % 2 === 0 && i !== 0) {
-          a.push(<Grid.Row columns={2}>{column}</Grid.Row>);
+    let newList = this.props.listPokemon.getIn(["data", "pokeList"]);
+    if (!_.isUndefined(newList) && !_.isEmpty(newList)) {
+      if (_.isUndefined(this.pokeList) || _.isEmpty(this.pokeList)) {
+        this.pokeList = newList.toJS();
+      } else {
+        let length = newList.toJS().length;
+        let newPoke = newList.toJS()[length - 1];
+        let lastPoke = this.pokeList[this.pokeList.length - 1];
+        if (newPoke.id !== lastPoke.id) {
+          this.pokeList.push(newPoke);
+        }
+      }
+    }
+    // let merged = [...this.pokeList, ...newList];
+    console.log(this.pokeList.length);
+
+    let calc = 5;
+    if (this.state.windowWidth < 450) calc = 2;
+    if (!_.isUndefined(this.pokeList) && !_.isEmpty(this.pokeList)) {
+      for (let i = 0; i < this.pokeList.length; i++) {
+        if (i % calc === 0 && i !== 0) {
+          a.push(
+            <Grid.Row stackable columns={calc}>
+              {column}
+            </Grid.Row>
+          );
           column = [];
         }
-        column.push(getColumns(pokeList.toJS()[i]));
+        column.push(getColumns(this.pokeList[i]));
       }
       if (column.length > 0) {
-        a.push(<Grid.Row columns={2}>{column}</Grid.Row>);
+        a.push(
+          <Grid.Row stackable columns={calc}>
+            {column}
+          </Grid.Row>
+        );
       }
     }
     return a;
-  };
-
-  state = {
-    next: "",
-    previous: "",
-    pokeList: [],
   };
 
   processResponseDetail(response) {
@@ -113,38 +95,35 @@ class home extends React.Component {
     this.state.pokeList.push(poke);
   }
 
-  processResponse(response) {
-    this.setState({
-      // next: response.getIn(["data", "next"]),
-      // previous: response.getIn(["data", "next"]),
-      // pokeList: response.getIn(["data", "pokeList"]).toJS(),
-    });
-  }
-
-  // componentDidUpdate(prevProps) {
-  //   const fetchDataSuccess = propsActionIsSuccess(
-  //     this.props,
-  //     prevProps,
-  //     "listPokemon"
-  //   );
-  //   if (fetchDataSuccess) {
-  //     console.log("list poke prop", this.props.listPokemon);
-  //     this.processResponse(this.props.listPokemon);
-  //   }
-  // }
+  handleLoadMore = () => {
+    console.log("load more called");
+    let nextUrl = this.props.listPokemon.getIn(["data", "next"]);
+    this.props.getList(nextUrl);
+  };
 
   render() {
-    console.log("render", this.state);
     return (
-      <Container>
+      <Container textAlign="center">
         <Grid padded>
-          <Grid.Row>
+          <Grid.Row columns={2}>
             <Grid.Column>
-              <Header size="huge">Pokedex</Header>
+              <Header size="huge" floated="left">
+                Pokedex
+              </Header>
+            </Grid.Column>
+            <Grid.Column>
+              <a href="/owned">
+                <Button floated="right" positive basic>
+                  Go to My Poke
+                </Button>
+              </a>
             </Grid.Column>
           </Grid.Row>
         </Grid>
         <Grid padded>{this.getRows()}</Grid>
+        <Button basic positive onClick={this.handleLoadMore}>
+          Load more
+        </Button>
       </Container>
     );
   }

@@ -9,7 +9,9 @@ import {
   Grid,
   Header,
   Image,
+  Input,
   Label,
+  Modal,
 } from "semantic-ui-react";
 import _ from "lodash";
 
@@ -41,7 +43,7 @@ const getPokemonTypes = (pokeList) => {
 
 const getPokemonAbilities = (abilities) => {
   let abil = [];
-  if (typeof abilities !== "undefined") {
+  if (!_.isUndefined(abilities) && !_.isEmpty(abilities)) {
     abilities.toJS().forEach((ability) => {
       abil.push(ability.ability.name);
     });
@@ -50,6 +52,82 @@ const getPokemonAbilities = (abilities) => {
 };
 
 class detail extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      show: false,
+      failed: false,
+      saved: false,
+    };
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+    this.showFailedCatch = this.showFailedCatch.bind(this);
+    this.hideFailedCatch = this.hideFailedCatch.bind(this);
+    this.showSavedModal = this.showSavedModal.bind(this);
+    this.hideSavedModal = this.hideSavedModal.bind(this);
+  }
+
+  nickname = "";
+
+  showModal = () => {
+    this.setState({ show: true });
+  };
+
+  hideModal = () => {
+    this.setState({ show: false });
+  };
+
+  showFailedCatch = () => {
+    this.setState({ failed: true });
+  };
+
+  hideFailedCatch = () => {
+    this.setState({ failed: false });
+  };
+
+  showSavedModal = () => {
+    this.setState({ saved: true });
+  };
+
+  hideSavedModal = () => {
+    this.setState({ saved: false });
+  };
+
+  submit = () => {
+    if (!_.isEmpty(this.nickname)) {
+      let catchedPoke = {
+        nickname: this.nickname,
+        name: this.props.detailPokemon.getIn(["data", "name"]),
+        defaultImage: this.props.detailPokemon.getIn(["data", "defaultImage"]),
+        types: this.props.detailPokemon.getIn(["data", "types"]),
+      };
+      let catchedList = JSON.parse(localStorage.getItem("catched"));
+      if (_.isNull(catchedList)) {
+        catchedList = [];
+      }
+      catchedList.push(catchedPoke);
+      localStorage.setItem("catched", JSON.stringify(catchedList));
+      console.log(JSON.parse(localStorage.getItem("catched")));
+      this.nickname = "";
+      this.hideModal();
+      this.showSavedModal();
+    }
+  };
+
+  catchAtemp = () => {
+    let seed = Math.floor(Math.random() * 10);
+    if (seed % 2 == 0) {
+      this.showModal();
+    } else {
+      this.showFailedCatch();
+    }
+  };
+
+  getNickname = (nickname) => {
+    this.nickname = nickname.target.value;
+    console.log("nickname", this.nickname);
+  };
+
   componentDidMount() {
     const search = this.props.location.search;
     const pokeId = new URLSearchParams(search).get("id");
@@ -105,9 +183,54 @@ class detail extends React.Component {
             </Grid.Row>
           </Grid>
         </Container>
-        <Button positive fluid attached="bottom">
+        <Button positive fluid attached="bottom" onClick={this.catchAtemp}>
           Catch!
         </Button>
+
+        <Modal size="mini" dimmer="blurring" open={this.state.show}>
+          <Modal.Header>Success</Modal.Header>
+          <Modal.Content>
+            <p>Please input nickname</p>
+            <Input
+              fluid
+              focus
+              placeholder="jhon doe"
+              onChange={this.getNickname.bind(this)}
+            />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button positive onClick={this.submit}>
+              submit
+            </Button>
+          </Modal.Actions>
+        </Modal>
+
+        <Modal size="mini" dimmer="blurring" open={this.state.failed}>
+          <Modal.Header>Failed</Modal.Header>
+          <Modal.Content>
+            <p>Failed to catch pokemon!</p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button positive onClick={this.hideFailedCatch}>
+              Okay
+            </Button>
+          </Modal.Actions>
+        </Modal>
+
+        <Modal size="mini" dimmer="blurring" open={this.state.saved}>
+          <Modal.Header>Success</Modal.Header>
+          <Modal.Content>
+            <p>Pokemon saved to My Pokemon List!</p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button positive onClick={this.hideSavedModal}>
+              Okay
+            </Button>
+            <a href="/owned">
+              <Button negative>Go to My Poke List</Button>
+            </a>
+          </Modal.Actions>
+        </Modal>
       </Container>
     );
   }

@@ -1,15 +1,14 @@
 import React from "react";
-import { Card, Image } from "semantic-ui-react";
+import { Card, Image, Label } from "semantic-ui-react";
 import _ from "lodash";
 
 function PokeCard({ poke }) {
-  console.log(poke);
   const getTypes = (types) => {
     var pokeTypes = [];
     types.forEach((type) => {
-      pokeTypes.push(type.type.name);
+      pokeTypes.push(<Label>{type.type.name}</Label>);
     });
-    return pokeTypes.join(", ");
+    return pokeTypes;
   };
 
   const getImg = (sprites) => {
@@ -23,9 +22,7 @@ function PokeCard({ poke }) {
         <Image src={getImg(poke.sprites)} wrapped ui={false} />
         <Card.Content>
           <Card.Header>{poke.name}</Card.Header>
-          <Card.Meta>
-            <span>{getTypes(poke.types)}</span>
-          </Card.Meta>
+          <Card.Meta>{getTypes(poke.types)}</Card.Meta>
         </Card.Content>
       </Card>
     </a>
