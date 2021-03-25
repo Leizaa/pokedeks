@@ -15,6 +15,7 @@ import {
   Segment,
 } from "semantic-ui-react";
 import _ from "lodash";
+import "./detail.css";
 
 const style = {
   paddingBottom: "1em",
@@ -32,6 +33,10 @@ const contentStyle = {
 
 const imageStyle = {
   margin: "auto",
+};
+
+const columnStyle = {
+  display: "flex",
 };
 
 const getPokemonTypes = (pokeList) => {
@@ -145,7 +150,7 @@ class detail extends React.Component {
             <Grid.Column>
               <Segment textAlign="center">
                 <Image
-                  style={imageStyle}
+                  className="margin-auto"
                   src={this.props.detailPokemon.getIn(["data", "defaultImage"])}
                   size="medium"
                   rounded
@@ -158,8 +163,8 @@ class detail extends React.Component {
                 )}
               </Segment>
             </Grid.Column>
-            <Grid.Column>
-              <Grid container>
+            <Grid.Column className="status">
+              <Grid className="margin-auto">
                 <Grid.Row columns={2}>
                   <Grid.Column>
                     <p>Weight</p>
