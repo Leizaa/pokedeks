@@ -3,14 +3,6 @@ import { Button, Container, Grid, Header } from "semantic-ui-react";
 import MyPokeCard from "../../../components/MyPokeCard";
 import _ from "lodash";
 
-const getColumns = (poke) => {
-  return (
-    <Grid.Column>
-      <MyPokeCard poke={poke} />
-    </Grid.Column>
-  );
-};
-
 class mypoke extends React.Component {
   constructor() {
     super();
@@ -19,10 +11,26 @@ class mypoke extends React.Component {
     };
   }
 
+  releasePoke = (self) => {
+    let pokeList = JSON.parse(localStorage.getItem("catched"));
+    for (let i = 0; i < pokeList.length; i++) {
+      console.log(pokeList[i].nickname, self.nickname);
+      if (
+        pokeList[i].nickname === self.nickname &&
+        pokeList[i].name === self.name
+      ) {
+        pokeList.splice(i, i + 1);
+        break;
+      }
+    }
+    localStorage.setItem("catched", JSON.stringify(pokeList));
+    this.setState({});
+  };
+
   getRows = () => {
     let a = [];
     let column = [];
-    var pokeList = JSON.parse(localStorage.getItem("catched"));
+    let pokeList = JSON.parse(localStorage.getItem("catched"));
     let calc = 5;
     if (this.state.windowWidth < 450) calc = 2;
     if (!_.isUndefined(pokeList) && !_.isEmpty(pokeList)) {
@@ -31,13 +39,21 @@ class mypoke extends React.Component {
           a.push(<Grid.Row columns={calc}>{column}</Grid.Row>);
           column = [];
         }
-        column.push(getColumns(pokeList[i]));
+        column.push(this.getColumns(pokeList[i]));
       }
       if (column.length > 0) {
         a.push(<Grid.Row columns={calc}>{column}</Grid.Row>);
       }
     }
     return a;
+  };
+
+  getColumns = (poke) => {
+    return (
+      <Grid.Column>
+        <MyPokeCard poke={poke} handleOnClick={this.releasePoke} />
+      </Grid.Column>
+    );
   };
 
   componentDidMount() {
