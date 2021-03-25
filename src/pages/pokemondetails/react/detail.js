@@ -12,6 +12,7 @@ import {
   Input,
   Label,
   Modal,
+  Segment,
 } from "semantic-ui-react";
 import _ from "lodash";
 
@@ -25,6 +26,8 @@ const cotainerStyle = {
 
 const contentStyle = {
   height: "93%",
+  display: "flex",
+  alignItems: "center",
 };
 
 const imageStyle = {
@@ -138,49 +141,55 @@ class detail extends React.Component {
     return (
       <Container style={cotainerStyle}>
         <Container style={contentStyle}>
-          <Container>
-            <Image
-              style={imageStyle}
-              src={this.props.detailPokemon.getIn(["data", "defaultImage"])}
-              size="medium"
-              rounded
-            />
-          </Container>
-          <Container textAlign="center" style={style}>
-            <Header size="large" textAlign="center">
-              {this.props.detailPokemon.getIn(["data", "name"])}
-            </Header>
-            {getPokemonTypes(this.props.detailPokemon.getIn(["data", "types"]))}
-          </Container>
-          <Grid>
-            <Grid.Row columns={2}>
-              <Grid.Column>
-                <p>Weight</p>
-              </Grid.Column>
-              <Grid.Column>
-                <p>{this.props.detailPokemon.getIn(["data", "weight"])}</p>
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={2}>
-              <Grid.Column>
-                <p>Height</p>
-              </Grid.Column>
-              <Grid.Column>
-                <p>{this.props.detailPokemon.getIn(["data", "height"])}</p>
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={2}>
-              <Grid.Column>
-                <p>Abilities</p>
-              </Grid.Column>
-              <Grid.Column>
-                <p>
-                  {getPokemonAbilities(
-                    this.props.detailPokemon.getIn(["data", "abilities"])
-                  )}
-                </p>
-              </Grid.Column>
-            </Grid.Row>
+          <Grid stackable columns={2}>
+            <Grid.Column>
+              <Segment textAlign="center">
+                <Image
+                  style={imageStyle}
+                  src={this.props.detailPokemon.getIn(["data", "defaultImage"])}
+                  size="medium"
+                  rounded
+                />
+                <Header size="large" textAlign="center">
+                  {this.props.detailPokemon.getIn(["data", "name"])}
+                </Header>
+                {getPokemonTypes(
+                  this.props.detailPokemon.getIn(["data", "types"])
+                )}
+              </Segment>
+            </Grid.Column>
+            <Grid.Column>
+              <Grid container>
+                <Grid.Row columns={2}>
+                  <Grid.Column>
+                    <p>Weight</p>
+                  </Grid.Column>
+                  <Grid.Column>
+                    <p>{this.props.detailPokemon.getIn(["data", "weight"])}</p>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={2}>
+                  <Grid.Column>
+                    <p>Height</p>
+                  </Grid.Column>
+                  <Grid.Column>
+                    <p>{this.props.detailPokemon.getIn(["data", "height"])}</p>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={2}>
+                  <Grid.Column>
+                    <p>Abilities</p>
+                  </Grid.Column>
+                  <Grid.Column>
+                    <p>
+                      {getPokemonAbilities(
+                        this.props.detailPokemon.getIn(["data", "abilities"])
+                      )}
+                    </p>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Grid.Column>
           </Grid>
         </Container>
         <Button positive fluid attached="bottom" onClick={this.catchAtemp}>
