@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Container, Grid, Header } from "semantic-ui-react";
-import MyPokeCard from "../../../components/MyPokeCard";
+import MyPokeCard from "../../components/MyPokeCard";
 import _ from "lodash";
 
 class mypoke extends React.Component {
@@ -14,7 +14,6 @@ class mypoke extends React.Component {
   releasePoke = (self) => {
     let pokeList = JSON.parse(localStorage.getItem("catched"));
     for (let i = 0; i < pokeList.length; i++) {
-      console.log(pokeList[i].nickname, self.nickname);
       if (
         pokeList[i].nickname === self.nickname &&
         pokeList[i].name === self.name
@@ -61,7 +60,6 @@ class mypoke extends React.Component {
   }
 
   handleResize = (e) => {
-    console.log(window.innerWidth);
     this.setState({ windowWidth: window.innerWidth });
   };
 

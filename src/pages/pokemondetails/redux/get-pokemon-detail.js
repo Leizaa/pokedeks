@@ -27,8 +27,6 @@ const getDefaultImg = (data) => {
 };
 
 const processDataSuccess = (action) => {
-  console.log(action.payload.response.data);
-
   const {
     id,
     name,
@@ -54,8 +52,6 @@ const processDataSuccess = (action) => {
   let output = {
     payload: data,
   };
-  console.log(output);
-
   return output;
 };
 

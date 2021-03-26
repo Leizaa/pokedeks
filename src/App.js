@@ -3,7 +3,7 @@ import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import detail from "./pages/pokemondetails/react/detail";
 import home from "./pages/pokelist/react/home";
-import mypoke from "./pages/mypokelist/react/mypoke";
+import mypoke from "./pages/mypokelist/mypoke";
 
 class App extends React.Component {
   state = {};

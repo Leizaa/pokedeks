@@ -4,7 +4,7 @@ import "semantic-ui-css/semantic.min.css";
 import PokeCard from "../../../components/PokeCard";
 import PropTypes from "prop-types";
 import { pokemonListSelector } from "../redux";
-import getListAction from "../redux/listname/action";
+import getListAction from "../redux/action";
 import { connect } from "react-redux";
 import _ from "lodash";
 
@@ -32,7 +32,6 @@ class home extends React.Component {
   }
 
   handleResize = (e) => {
-    console.log(window.innerWidth);
     this.setState({ windowWidth: window.innerWidth });
   };
 
@@ -52,8 +51,6 @@ class home extends React.Component {
         }
       }
     }
-    // let merged = [...this.pokeList, ...newList];
-    console.log(this.pokeList.length);
 
     let calc = 5;
     if (this.state.windowWidth < 450) calc = 2;
@@ -91,14 +88,15 @@ class home extends React.Component {
       types,
       sprites,
     };
-    console.log("detail", poke);
     this.state.pokeList.push(poke);
   }
 
   handleLoadMore = () => {
-    console.log("load more called");
-    let nextUrl = this.props.listPokemon.getIn(["data", "next"]);
-    this.props.getList(nextUrl);
+    let isFetching = this.props.listPokemon.isFetching;
+    if (!isFetching) {
+      let nextUrl = this.props.listPokemon.getIn(["data", "next"]);
+      this.props.getList(nextUrl);
+    }
   };
 
   render() {

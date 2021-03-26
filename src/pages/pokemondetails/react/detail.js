@@ -17,28 +17,6 @@ import {
 import _ from "lodash";
 import "./detail.css";
 
-const style = {
-  paddingBottom: "1em",
-};
-
-const cotainerStyle = {
-  height: "100%",
-};
-
-const contentStyle = {
-  height: "93%",
-  display: "flex",
-  alignItems: "center",
-};
-
-const imageStyle = {
-  margin: "auto",
-};
-
-const columnStyle = {
-  display: "flex",
-};
-
 const getPokemonTypes = (pokeList) => {
   let a = [];
   if (typeof pokeList !== "undefined") {
@@ -115,7 +93,6 @@ class detail extends React.Component {
       }
       catchedList.push(catchedPoke);
       localStorage.setItem("catched", JSON.stringify(catchedList));
-      console.log(JSON.parse(localStorage.getItem("catched")));
       this.nickname = "";
       this.hideModal();
       this.showSavedModal();
@@ -124,7 +101,7 @@ class detail extends React.Component {
 
   catchAtemp = () => {
     let seed = Math.floor(Math.random() * 10);
-    if (seed % 2 == 0) {
+    if (seed % 2 === 0) {
       this.showModal();
     } else {
       this.showFailedCatch();
@@ -133,7 +110,6 @@ class detail extends React.Component {
 
   getNickname = (nickname) => {
     this.nickname = nickname.target.value;
-    console.log("nickname", this.nickname);
   };
 
   componentDidMount() {
@@ -144,8 +120,8 @@ class detail extends React.Component {
 
   render() {
     return (
-      <Container style={cotainerStyle}>
-        <Container style={contentStyle}>
+      <Container className="main-container">
+        <Container className="main-content">
           <Grid stackable columns={2}>
             <Grid.Column>
               <Segment textAlign="center">

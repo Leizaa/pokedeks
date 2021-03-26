@@ -1,6 +1,6 @@
 import axios from "axios";
-import apiConstant from "../../../../util/api-constant";
-import request from "../../../../util/request";
+import apiConstant from "../../../util/api-constant";
+import request from "../../../util/request";
 import actionType from "./action-type";
 import _ from "lodash";
 

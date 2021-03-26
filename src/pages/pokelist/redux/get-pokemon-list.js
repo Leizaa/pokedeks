@@ -1,6 +1,6 @@
-import reducer from "../../../../util/reducer-util";
+import reducer from "../../../util/reducer-util";
 import actionType from "./action-type";
-import apiData from "../../../../util/api-data";
+import apiData from "../../../util/api-data";
 import _ from "lodash";
 
 const initialState = apiData.list();
